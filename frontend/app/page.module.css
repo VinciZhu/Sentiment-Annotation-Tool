@@ -52,6 +52,7 @@
   background: rgba(var(--card-rgb), 0);
   border: 1px solid rgba(var(--card-border-rgb), 0);
   transition: background 200ms, border 200ms;
+  font-family: var(--font-serif);
 }
 
 .card span {
@@ -78,6 +79,7 @@
   align-items: center;
   position: relative;
   padding: 4rem 0;
+  font-size: 2rem;
 }
 
 .center::before {
@@ -104,7 +106,6 @@
   transform: translateZ(0);
 }
 
-.logo,
 .thirteen {
   position: relative;
 }
@@ -255,7 +256,6 @@
     filter: invert(1);
   }
 
-  .logo,
   .thirteen img {
     filter: invert(1) drop-shadow(0 0 0.3rem #ffffff70);
   }
