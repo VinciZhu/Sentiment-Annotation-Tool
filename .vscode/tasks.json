@@ -1,0 +1,34 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "frontend dev",
+      "type": "shell",
+      "command": "cd frontend && yarn dev",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new",
+        "group": "dev"
+      }
+    },
+    {
+      "label": "backend dev",
+      "type": "shell",
+      "command": "cd backend && poetry run dev",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new",
+        "group": "dev"
+      }
+    },
+    {
+      "label": "dev",
+      "problemMatcher": [],
+      "dependsOn": ["frontend dev", "backend dev"]
+    }
+  ]
+}

@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "dotenv -e ../.env -c -- bash -c 'next dev -H $NEXTJS_HOST -p $NEXTJS_PORT'",
+    "start": "dotenv -e ../.env -c -- bash -c 'next start -H $NEXTJS_HOST -p $NEXTJS_PORT'",
     "build": "next build",
-    "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
@@ -13,6 +13,7 @@
     "@types/node": "18.11.18",
     "@types/react": "18.0.26",
     "@types/react-dom": "18.0.10",
+    "dotenv-cli": "^7.0.0",
     "eslint": "8.32.0",
     "eslint-config-next": "13.1.2",
     "next": "13.1.2",
