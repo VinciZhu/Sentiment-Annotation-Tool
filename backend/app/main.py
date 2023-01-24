@@ -1,6 +1,7 @@
 import os
 import pandas as pd
 from fastapi import FastAPI
+from fastapi.responses import FileResponse
 
 DATA_PATH = os.getenv('DATA_PATH')
 df = pd.read_csv(DATA_PATH, index_col=0, keep_default_na=False)
@@ -75,6 +76,18 @@ def update_post_sentiment(post_id: str, positive: str, negative: str):
     return {'success': True}
 
 
+@app.post('/update_post_positive/{post_id}')
+def update_post_positive(post_id: str, positive: str):
+    df.loc[df['post_id'] == post_id, 'post_positive'] = positive
+    return {'success': True}
+
+
+@app.post('/update_post_negative/{post_id}')
+def update_post_negative(post_id: str, negative: str):
+    df.loc[df['post_id'] == post_id, 'post_negative'] = negative
+    return {'success': True}
+
+
 @app.get('/next_post')
 def get_next_post_id(cur_id: str, unlabeled_only: bool):
     if unlabeled_only:
@@ -119,3 +132,14 @@ def get_prev_post_id(cur_id: str, unlabeled_only: bool):
         cur_index = id_list.index(cur_id)
         prev_id = id_list[cur_index - 1] if cur_index > 0 else ''
     return {'id': prev_id}
+
+
+@app.post('/save')
+def save():
+    df.to_csv(DATA_PATH)
+    return {'success': True}
+
+
+@app.get('/download')
+def download():
+    return FileResponse(DATA_PATH)

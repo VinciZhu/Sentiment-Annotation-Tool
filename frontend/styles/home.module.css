@@ -1,0 +1,17 @@
+.main {
+  display: flex;
+  align-items: center;
+  height: 100vh;
+}
+
+.button {
+  flex: auto;
+  text-align: center;
+  transition: background var(--transition);
+  font-family: var(--font-mono);
+  font-size: 2rem;
+}
+
+.button:hover {
+  background: rgb(var(--secondary-rgb));
+}

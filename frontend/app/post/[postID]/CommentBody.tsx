@@ -1,7 +1,7 @@
 'use client'
 import styles from '@/styles/post.module.css'
 import { baseurl, updateCommentSentiment } from '@/api/post'
-import { ArrowUpOnSquareIcon } from '@heroicons/react/24/outline'
+import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline'
 import { useState } from 'react'
 export default CommentBody
 
@@ -31,7 +31,7 @@ function CommentBody({
   }
   return (
     <>
-      <div className={styles.comment_top}>
+      <div className={styles.top}>
         <div
           className={styles.neutral_button}
           onClick={() => {
@@ -40,13 +40,13 @@ function CommentBody({
           }}
         />
         <p>{timeStamp}</p>
-        <a className={styles.comment_link} href={`${baseurl}/comment/${index}`}>
+        <a className={styles.link} href={`${baseurl}/comment/${index}`}>
           <span className={sentimentClass}>{index}</span>
           &nbsp;
-          <ArrowUpOnSquareIcon className={styles.icon} />
+          <ArrowTopRightOnSquareIcon className={styles.icon} />
         </a>
       </div>
-      <div className={styles.comment_body}>
+      <div className={styles.body}>
         <div
           className={styles.positive_button}
           onClick={() => {
