@@ -7,9 +7,9 @@ import {
 } from '@/api/post'
 import CommentBody from './CommentBody'
 import { Suspense } from 'react'
-export default Main
+export default PostContent
 
-async function Main({ params }: { params: { postID: string } }) {
+async function PostContent({ params }: { params: { postID: string } }) {
   const { child_indices } = await getComments(params.postID)
   return (
     <div className={styles.content}>

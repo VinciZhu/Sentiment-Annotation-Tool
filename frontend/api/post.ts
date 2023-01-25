@@ -1,6 +1,3 @@
-import MarkdownIt from 'markdown-it'
-const md = new MarkdownIt()
-
 export const baseurl = process.env.API_URL
 
 export async function getPostIDList(): Promise<string[]> {
@@ -13,7 +10,6 @@ export async function getFilename(): Promise<string> {
   return fetch(`${baseurl}/`)
     .then((res) => res.json())
     .then((data) => {
-      console.log(data)
       return data.filename
     })
 }
@@ -63,10 +59,12 @@ export async function getChildren(index: number): Promise<number[]> {
     .then((data) => data.children)
 }
 
+import MarkdownIt from 'markdown-it'
 export async function getComment(index: number): Promise<{
   content: string
   time_stamp: string
 }> {
+  const md = new MarkdownIt()
   return fetch(`${baseurl}/comment/${index}`)
     .then((res) => res.json())
     .then((data) => {
@@ -145,10 +143,7 @@ export async function updatePostNegative(
 }
 
 export async function saveDataframe() {
-  return fetch(`${baseurl}/save`, {
-    method: 'POST',
-    mode: 'no-cors',
-  })
+  return fetch(`${baseurl}/save`, { method: 'POST' })
 }
 
 export async function downloadDataframe() {

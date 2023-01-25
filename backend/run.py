@@ -37,3 +37,7 @@ def lint():
         'ruff .',
     ]
     os.system(' '.join(cmd))
+
+
+if __name__ == '__main__':
+    start()

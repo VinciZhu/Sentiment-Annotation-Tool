@@ -1,7 +1,9 @@
 import os
+from datetime import datetime
 import pandas as pd
+from pandas_profiling import ProfileReport
 from fastapi import FastAPI
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, HTMLResponse
 
 DATA_PATH = os.getenv('DATA_PATH')
 df = pd.read_csv(DATA_PATH, index_col=0, keep_default_na=False)
@@ -142,4 +144,14 @@ def save():
 
 @app.get('/download')
 def download():
-    return FileResponse(DATA_PATH)
+    filename = f'{datetime.now().strftime("%Y-%m-%d-%H%M%S")}.csv'
+    return FileResponse(DATA_PATH, filename=filename)
+
+
+@app.get('/report')
+def report():
+    title = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    report = ProfileReport(
+        df[['comment_sentiment', 'post_positive', 'post_negative']], title=title
+    )
+    return HTMLResponse(report.to_html())

@@ -83,35 +83,38 @@
   overflow-wrap: anywhere;
 }
 
-.header .toolbar {
+.header > .toolbar {
   display: flex;
   flex-flow: row wrap;
   align-items: center;
 }
-.header .toolbar svg {
+.header > .toolbar > *:not(.label) {
   height: 2rem;
   width: 2rem;
   padding: 0.25rem;
 }
-.header .toolbar svg path {
+.header > .toolbar > *:not(.label):hover {
+  background: rgb(var(--secondary-rgb));
+}
+.header > .toolbar svg path {
   stroke-width: 1px;
 }
-.header .toolbar .label {
+.header > .toolbar .label {
   font-weight: bold;
   padding: 0.25rem 0.5rem;
 }
 
-.header .select .menu {
+.header > .select .menu {
   width: 100%;
   max-height: 50vh;
   overflow-y: scroll;
 }
-.header .select .button,
-.header .select .option {
+.header > .select .button,
+.header > .select .option {
   display: block;
-  padding: 0.25rem 0.5rem;
+  padding: 0.4rem 0.5rem;
 }
-.header .select .button {
+.header > .select .button {
   font-weight: bold;
 }
 

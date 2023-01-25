@@ -12,6 +12,7 @@ import {
   PostSentimentType,
   updatePostPositive,
   updatePostNegative,
+  saveDataframe,
 } from '@/api/post'
 import {
   ChevronDownIcon,
@@ -32,20 +33,20 @@ import { useState, useEffect } from 'react'
 import { create } from 'zustand'
 
 interface PostContext {
-  postIDList: string[]
   filename: string
+  postIDList: string[]
   fetch: () => void
 }
 
 const usePostContext = create<PostContext>((set) => ({
-  postIDList: [],
   filename: '',
+  postIDList: [],
   fetch: async () => {
-    const [postIDList, filename] = await Promise.all([
-      getPostIDList(),
+    const [filename, postIDList] = await Promise.all([
       getFilename(),
+      getPostIDList(),
     ])
-    set({ postIDList, filename })
+    set({ filename, postIDList })
   },
 }))
 
@@ -62,7 +63,7 @@ interface PostState {
   fetch: (postID: PostSentimentType) => void
 }
 
-const usePostStore = create<PostState>((set) => ({
+const usePostState = create<PostState>((set) => ({
   postID: '',
   prevID: '',
   nextID: '',
@@ -107,11 +108,13 @@ export default function PostLayout({
   children: React.ReactNode
 }) {
   const postID = useSelectedLayoutSegment()
-  const fetchPostContext = usePostContext((state) => state.fetch)
-  const fetchPostStore = usePostStore((state) => state.fetch)
+  const fetchGlobalStore = usePostContext((state) => state.fetch)
+  const fetchPostStore = usePostState((state) => state.fetch)
 
   useEffect(() => {
-    fetchPostContext()
+    fetchGlobalStore()
+  })
+  useEffect(() => {
     if (postID) fetchPostStore(postID as PostSentimentType)
   })
 
@@ -132,11 +135,17 @@ function PostHeader() {
   return (
     <div className={styles.header}>
       <div className={styles.toolbar}>
-        <>
+        <Link href="/api/download" target="_blank">
           <ArrowDownTrayIcon />
-          <CloudArrowUpIcon />
+        </Link>
+        <CloudArrowUpIcon
+          onClick={() => {
+            saveDataframe()
+          }}
+        />
+        <Link href="/api/report" target="_blank">
           <PresentationChartBarIcon />
-        </>
+        </Link>
         <div className={styles.label}>{filename}</div>
       </div>
       <div className={styles.select}>
@@ -158,10 +167,10 @@ function PostHeader() {
 }
 
 function PostFooter() {
-  const prevID = usePostStore((state) => state.prevID)
-  const nextID = usePostStore((state) => state.nextID)
-  const prevUnlabeledID = usePostStore((state) => state.prevUnlabeledID)
-  const nextUnlabeledID = usePostStore((state) => state.nextUnlabeledID)
+  const prevID = usePostState((state) => state.prevID)
+  const nextID = usePostState((state) => state.nextID)
+  const prevUnlabeledID = usePostState((state) => state.prevUnlabeledID)
+  const nextUnlabeledID = usePostState((state) => state.nextUnlabeledID)
   return (
     <div className={styles.footer}>
       <Link
@@ -187,32 +196,30 @@ function PostFooter() {
 }
 
 function PostSider() {
-  const postPositive = usePostStore((state) => state.postPositive)
-  const postNegative = usePostStore((state) => state.postNegative)
   return (
     <div className={styles.sider}>
       <div className={styles.select}>
         <PlusIcon className={styles.button} />
-        <PostSentimentMenu initialSentiment={postPositive} target="positive" />
+        <PostSentimentMenu target="positive" />
       </div>
       <div className={styles.select}>
         <MinusIcon className={styles.button} />
-        <PostSentimentMenu initialSentiment={postNegative} target="negative" />
+        <PostSentimentMenu target="negative" />
       </div>
     </div>
   )
 }
 
-function PostSentimentMenu({
-  initialSentiment,
-  target,
-}: {
-  initialSentiment: PostSentimentType
-  target: 'positive' | 'negative'
-}) {
-  const setPostNegative = usePostStore((state) => state.setPostNegative)
-  const setPostPositive = usePostStore((state) => state.setPostPositive)
-  const [sentiment, setSentiment] = useState(initialSentiment)
+function PostSentimentMenu({ target }: { target: 'positive' | 'negative' }) {
+  const postPositive = usePostState((state) => state.postPositive)
+  const postNegative = usePostState((state) => state.postNegative)
+  const initialSelected = target === 'positive' ? postPositive : postNegative
+  const [selected, setSelected] = useState<PostSentimentType>('')
+  const setPostPositive = usePostState((state) => state.setPostPositive)
+  const setPostNegative = usePostState((state) => state.setPostNegative)
+  useEffect(() => {
+    setSelected(initialSelected)
+  }, [initialSelected])
   return (
     <div className={styles.menu}>
       {PostSentimentOptions.map(
@@ -222,10 +229,10 @@ function PostSentimentMenu({
               key={option}
               className={
                 styles.option +
-                (sentiment === option ? ' ' + styles.selected : '')
+                (selected === option ? ' ' + styles.selected : '')
               }
               onClick={() => {
-                setSentiment(option as PostSentimentType)
+                setSelected(option as PostSentimentType)
                 if (target === 'positive') {
                   setPostPositive(option as PostSentimentType)
                 } else if (target === 'negative') {
@@ -234,7 +241,7 @@ function PostSentimentMenu({
               }}
             >
               {option}
-              {sentiment === option && (
+              {selected === option && (
                 <span className={styles.check}>
                   <CheckIcon className={styles.icon} />
                 </span>
