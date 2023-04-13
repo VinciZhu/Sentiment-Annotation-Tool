@@ -4,6 +4,12 @@ import pandas as pd
 from pandas_profiling import ProfileReport
 from fastapi import FastAPI
 from fastapi.responses import FileResponse, HTMLResponse
+from fastapi.middleware.cors import CORSMiddleware
+
+
+FRONTEND_HOST = os.getenv('NEXTJS_HOST')
+FRONTEND_PORT = os.getenv('NEXTJS_PORT')
+FRONTEND_URL = f'http://{FRONTEND_HOST}:{FRONTEND_PORT}'
 
 DATA_PATH = os.getenv('DATA_PATH')
 df = pd.read_csv(DATA_PATH, index_col=0, keep_default_na=False)
@@ -18,6 +24,10 @@ df.rename(
 
 
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[FRONTEND_URL],
+)
 
 
 @app.get('/')
@@ -97,7 +107,8 @@ def get_next_post_id(cur_id: str, unlabeled_only: bool):
             df.loc[
                 (df['comment_sentiment'] == '')
                 | (df['post_positive'] == '')
-                | (df['post_negative'] == ''),
+                | (df['post_negative'] == '')
+                | (df['post_id'] == cur_id),
                 'post_id',
             ]
             .unique()
@@ -106,10 +117,11 @@ def get_next_post_id(cur_id: str, unlabeled_only: bool):
     else:
         id_list = df['post_id'].unique().tolist()
     if cur_id == '':
-        next_id = id_list[0]
-    else:
-        cur_index = id_list.index(cur_id)
-        next_id = id_list[cur_index + 1] if cur_index < len(id_list) - 1 else ''
+        return {'id': id_list[0]}
+    if cur_id not in id_list:
+        return {'id': ''}
+    cur_index = id_list.index(cur_id)
+    next_id = id_list[cur_index + 1] if cur_index < len(id_list) - 1 else ''
     return {'id': next_id}
 
 
@@ -120,7 +132,8 @@ def get_prev_post_id(cur_id: str, unlabeled_only: bool):
             df.loc[
                 (df['comment_sentiment'] == '')
                 | (df['post_positive'] == '')
-                | (df['post_negative'] == ''),
+                | (df['post_negative'] == '')
+                | (df['post_id'] == cur_id),
                 'post_id',
             ]
             .unique()
@@ -129,10 +142,11 @@ def get_prev_post_id(cur_id: str, unlabeled_only: bool):
     else:
         id_list = df['post_id'].unique().tolist()
     if cur_id == '':
-        prev_id = id_list[-1]
-    else:
-        cur_index = id_list.index(cur_id)
-        prev_id = id_list[cur_index - 1] if cur_index > 0 else ''
+        return {'id': id_list[-1]}
+    if cur_id not in id_list:
+        return {'id': ''}
+    cur_index = id_list.index(cur_id)
+    prev_id = id_list[cur_index - 1] if cur_index > 0 else ''
     return {'id': prev_id}
 
 
@@ -142,16 +156,17 @@ def save():
     return {'success': True}
 
 
-@app.get('/download')
+@app.get('/download', response_class=FileResponse)
 def download():
     filename = f'{datetime.now().strftime("%Y-%m-%d-%H%M%S")}.csv'
-    return FileResponse(DATA_PATH, filename=filename)
+    df.to_csv(filename)
+    return filename
 
 
-@app.get('/report')
+@app.get('/report', response_class=HTMLResponse)
 def report():
     title = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     report = ProfileReport(
         df[['comment_sentiment', 'post_positive', 'post_negative']], title=title
     )
-    return HTMLResponse(report.to_html())
+    return report.to_html()

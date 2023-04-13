@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "sentiment-labeller"
+name = "sentiment-annotation"
 version = "0.1.0"
 description = ""
 authors = ["HasiNed <hasined@foxmail.com>"]

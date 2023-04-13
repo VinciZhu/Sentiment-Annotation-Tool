@@ -7,16 +7,19 @@ const nextConfig = {
   experimental: {
     appDir: true,
   },
+  // env: {
+  //   API_URL: NEXTJS_URL + '/api',
+  // },
+  // rewrites() {
+  //   return [
+  //     {
+  //       source: '/api/:path*',
+  //       destination: FASTAPI_URL + '/:path*',
+  //     },
+  //   ]
+  // },
   env: {
-    API_URL: NEXTJS_URL + '/api',
-  },
-  rewrites() {
-    return [
-      {
-        source: '/api/:path*',
-        destination: FASTAPI_URL + '/:path*',
-      },
-    ]
+    API_URL: FASTAPI_URL,
   },
 }
 

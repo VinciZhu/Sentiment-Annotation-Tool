@@ -1,6 +1,7 @@
 'use client'
 import styles from '@/styles/post.module.css'
 import {
+  baseurl,
   getPrevPostID,
   getNextPostID,
   getPostIDList,
@@ -135,17 +136,25 @@ function PostHeader() {
   return (
     <div className={styles.header}>
       <div className={styles.toolbar}>
-        <Link href="/api/download" target="_blank">
+        <a
+          href={`${baseurl}/download`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           <ArrowDownTrayIcon />
-        </Link>
+        </a>
         <CloudArrowUpIcon
           onClick={() => {
             saveDataframe()
           }}
         />
-        <Link href="/api/report" target="_blank">
+        <a
+          href={`${baseurl}/report`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           <PresentationChartBarIcon />
-        </Link>
+        </a>
         <div className={styles.label}>{filename}</div>
       </div>
       <div className={styles.select}>

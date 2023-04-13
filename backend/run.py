@@ -20,13 +20,20 @@ def dev():
 
 
 def start():
+    # cmd = [
+    #     'poetry run',
+    #     'gunicorn',
+    #     'app.main:app',
+    #     '-w 4',
+    #     '-k uvicorn.workers.UvicornWorker',
+    #     f'-b {FASTAPI_HOST}:{FASTAPI_PORT}',
+    # ]
     cmd = [
         'poetry run',
-        'gunicorn',
+        'uvicorn',
         'app.main:app',
-        '-w 4',
-        '-k uvicorn.workers.UvicornWorker',
-        f'-b {FASTAPI_HOST}:{FASTAPI_PORT}',
+        f'--host {FASTAPI_HOST}',
+        f'--port {FASTAPI_PORT}',
     ]
     os.system(' '.join(cmd))
 
