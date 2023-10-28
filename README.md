@@ -1,5 +1,6 @@
 # sentiment-annotator
-Annotation tool, for research purpose.
+
+A simple annotation tool for sentiment analysis research on Reddit.
 
 ## Tech Stack
 
@@ -13,3 +14,8 @@ Annotation tool, for research purpose.
 
 - Python & Poetry & FastAPI
 - Pandas, with pd.Dataframe in memory as a pseudo database (since I am lazy)
+
+
+## Demo
+
+![demo](./demo.gif)

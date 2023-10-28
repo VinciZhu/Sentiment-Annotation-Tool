@@ -117,6 +117,8 @@ def get_next_post_id(cur_id: str, unlabeled_only: bool):
     else:
         id_list = df['post_id'].unique().tolist()
     if cur_id == '':
+        if len(id_list) == 0:
+            return {'id': df['post_id'].unique().tolist()[0]}
         return {'id': id_list[0]}
     if cur_id not in id_list:
         return {'id': ''}
