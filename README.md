@@ -1,4 +1,4 @@
-# sentiment-annotator
+# Sentiment-Annotation-Tool
 
 A simple annotation tool for sentiment analysis research on Reddit.
 
